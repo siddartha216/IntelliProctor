@@ -1,0 +1,140 @@
+/* Background */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f2027, #1a1a40, #4b0082);
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Glass container */
+.container {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 40px;
+    width: 650px;
+    text-align: center;
+
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255,255,255,0.2);
+
+    box-shadow:
+        0 0 20px rgba(138, 43, 226, 0.4),
+        0 0 40px rgba(75, 0, 130, 0.4);
+}
+
+/* Title */
+.title {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+/* Instructions */
+.instructions {
+    text-align: left;
+    line-height: 1.7;
+}
+
+/* Bottom */
+.bottom {
+    margin-top: 20px;
+}
+
+/* Checkbox */
+.agree-box {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Button */
+button {
+    margin-top: 15px;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+
+    background: linear-gradient(45deg, #6a0dad, #8a2be2);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Hover */
+button:hover {
+    box-shadow:
+        0 0 10px #8a2be2,
+        0 0 20px #8a2be2;
+    transform: scale(1.05);
+}
+/* Video container */
+
+
+/* Hover effect */
+#video-feed:hover {
+    transform: scale(1.03);
+}
+.video-container {
+    margin-top: 20px;
+}
+
+#video-feed {
+    width: 500px;
+    border-radius: 20px;
+    border: 3px solid white;
+
+    box-shadow:
+        0 0 15px #8a2be2,
+        0 0 30px #6a0dad;
+}
+/* Status box */
+.status-box {
+    margin-top: 20px;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.safe {
+    background: rgba(0, 255, 100, 0.15);
+    border: 2px solid #00ff64;
+    color: #00ff64;
+}
+
+.danger {
+    background: rgba(255, 0, 0, 0.2);
+    border: 2px solid red;
+    color: red;
+    animation: pulse 0.8s infinite;
+}
+
+@keyframes pulse {
+    0%   { box-shadow: 0 0 0px red; }
+    50%  { box-shadow: 0 0 20px red; }
+    100% { box-shadow: 0 0 0px red; }
+}
+
+/* Alert count */
+.alert-count {
+    margin-top: 12px;
+    font-size: 16px;
+    color: #ffcc00;
+    font-weight: bold;
+}
+#video {
+    width: 500px;
+    height: 375px;
+    border-radius: 20px;
+    border: 3px solid white;
+    box-shadow:
+        0 0 15px #8a2be2,
+        0 0 30px #6a0dad;
+    background: #000;
+}

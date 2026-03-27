@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exam</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .video-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        #video {
+            width: 500px;
+            height: 375px;
+            border-radius: 20px;
+            border: 3px solid white;
+            box-shadow: 0 0 15px #8a2be2, 0 0 30px #6a0dad;
+            background: #000;
+            display: block;
+        }
+
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 500px;
+            height: 375px;
+            border-radius: 20px;
+            pointer-events: none;
+        }
+
+        #canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="title">Exam in Progress</h1>
+    <p>AI Proctoring is active. Please stay in front of the camera.</p>
+
+    <div class="video-wrapper">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="overlay"></canvas>
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <div id="status-box" class="status-box safe">
+        <span id="status-text">Monitoring...</span>
+    </div>
+
+    <div class="alert-count">
+        🚨 Alerts: <span id="alert-count">0</span>
+    </div>
+</div>
+
+<script>
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const overlay = document.getElementById('overlay');
+const ctx = canvas.getContext('2d');
+const octx = overlay.getContext('2d');
+
+// Start webcam
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => { video.srcObject = stream; })
+    .catch(err => { alert("Camera access denied: " + err); });
+
+// Scale factor between actual video size and display size
+const DISPLAY_W = 500;
+const DISPLAY_H = 375;
+
+overlay.width = DISPLAY_W;
+overlay.height = DISPLAY_H;
+
+setInterval(() => {
+    if (video.readyState !== 4) return;
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0);
+
+    const frameData = canvas.toDataURL('image/jpeg', 0.7);
+
+    fetch('/process', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ frame: frameData })
+    })
+    .then(r => r.json())
+    .then(data => {
+        // Update status
+        const statusEl = document.getElementById('status-text');
+        const alertEl = document.getElementById('alert-count');
+        const statusBox = document.getElementById('status-box');
+
+        statusEl.textContent = data.status;
+        alertEl.textContent = data.alert_count;
+
+        if (data.status.includes("CHEATING") || data.status.includes("No Face")) {
+            statusBox.className = 'status-box danger';
+        } else {
+            statusBox.className = 'status-box safe';
+        }
+
+        // Draw face box on overlay canvas
+        octx.clearRect(0, 0, DISPLAY_W, DISPLAY_H);
+
+        if (data.face) {
+            const scaleX = DISPLAY_W / video.videoWidth;
+            const scaleY = DISPLAY_H / video.videoHeight;
+
+            const x = data.face.x * scaleX;
+            const y = data.face.y * scaleY;
+            const w = data.face.w * scaleX;
+            const h = data.face.h * scaleY;
+
+            // Box color: red if cheating, green if ok
+            const isAlert = data.status.includes("CHEATING") || data.status.includes("No Face");
+            octx.strokeStyle = isAlert ? '#ff0000' : '#00ff00';
+            octx.lineWidth = 3;
+            octx.strokeRect(x, y, w, h);
+
+            // Label above box
+            octx.fillStyle = isAlert ? '#ff0000' : '#00ff00';
+            octx.font = 'bold 16px Arial';
+            octx.fillText(data.direction || "Center", x, y - 8);
+        }
+    });
+}, 500);
+</script>
+</body>
+</html>

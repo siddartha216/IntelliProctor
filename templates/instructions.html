@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Instructions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1 class="title">Exam Instructions</h1>
+    <ul class="instructions">
+        <li>Stay visible in front of the webcam at all times.</li>
+        <li>Do not switch tabs or open other applications.</li>
+        <li>Do not look away from the screen for more than 3 seconds.</li>
+        <li>No phones, books, or external help allowed.</li>
+        <li>Ensure proper lighting so your face is clearly visible.</li>
+        <li>Only one person should be in front of the camera.</li>
+        <li>Violations may result in exam termination.</li>
+    </ul>
+    <div class="bottom">
+        <div class="agree-box">
+            <input type="checkbox" id="agree">
+            <label>I agree to follow all the instructions</label>
+        </div>
+        <button onclick="goExam()">Proceed to Exam</button>
+    </div>
+</div>
+<script>
+function goExam() {
+    if (document.getElementById("agree").checked) {
+        window.location.href = "/exam";
+    } else {
+        alert("Please accept the instructions first.");
+    }
+}
+</script>
+</body>
+</html>
